@@ -1,23 +1,14 @@
 #! /usr/bin/env python
 
-try:
-  import pyver
-except ImportError:
-  import pip
-  pip.main (['install', 'pyver'])
-  import pyver # pylint: disable=W0611
-
 from setuptools import setup, find_packages
-import glob
-
-__version__, __version_info__ = pyver.get_version (pkg = "qlogtask",
-                                                   public = True)
+import glob, versioneer
 
 setup (
     name = "qlogtask",
-    version = __version__,
+    version = versioneer.get_version (),                
     description = "Celery task event handlers for qeventlog",
     long_description = file ("README.rst").read (),
+    cmdclass = versioneer.get_cmdclass (),
     classifiers = [
       "Development Status :: 4 - Beta",
       "Intended Audience :: Developers",

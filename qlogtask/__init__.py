@@ -151,3 +151,7 @@ def qetask_task_revoked (**kwargs):
 @logtool.log_call
 def qetask_install ():
   LOG.info ("QETask signal handlers installed.")
+
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
