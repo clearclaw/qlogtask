@@ -1,9 +1,13 @@
 #! /usr/bin/env python
 
-import celery, json, logging, logtool, os, pyver, socket, time
+from __future__ import absolute_import
+import celery, json, logging, logtool, os, socket, time
 from celery import signals
+from ._version import get_versions
+__version__ = get_versions ()['version']
+__version_info__ = get_versions ()
+del get_versions
 
-__version__, __version_info__ = pyver.get_version (pkg = __name__)
 LOG = logging.getLogger (__name__)
 
 @logtool.log_call (log_rc = False)
@@ -151,7 +155,3 @@ def qetask_task_revoked (**kwargs):
 @logtool.log_call
 def qetask_install ():
   LOG.info ("QETask signal handlers installed.")
-
-from ._version import get_versions
-__version__ = get_versions()['version']
-del get_versions
