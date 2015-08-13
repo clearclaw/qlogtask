@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 from __future__ import absolute_import
-import celery, json, logging, logtool, os, socket, time
+import celery, datetime, json, logging, logtool, os, socket, time
 from celery import signals
 from ._version import get_versions
 __version__ = get_versions ()['version']
@@ -15,6 +15,7 @@ def send_event (event):
   # pylint: disable=E0611
   celery.execute.send_task ( # pylint: disable = E1101
     "qeventlog.tasks.log",
+    args = datetime.datetime.utcnow (),
     kwargs = event,
     exchange = "qeventlog",
     queue = "qeventlog")
