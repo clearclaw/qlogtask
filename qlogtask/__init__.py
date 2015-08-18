@@ -15,7 +15,7 @@ def send_event (event):
   # pylint: disable=E0611
   celery.execute.send_task ( # pylint: disable = E1101
     "qeventlog.tasks.log",
-    args = (datetime.datetime.utcnow (),),
+    args = (str (datetime.datetime.utcnow ()),),
     kwargs = event,
     exchange = "qeventlog",
     queue = "qeventlog")
