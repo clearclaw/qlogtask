@@ -112,7 +112,7 @@ def qetask_task_retry (**kwargs):
     "kwargs": json.dumps (request.kwargs),
     "expires": request.expires,
     "retries": request.retries,
-    "traceback": request.einfo.traceback,
+    "traceback": kwargs["einfo"].traceback,
     "uuid": request.id,
   })
   send_event (event)
