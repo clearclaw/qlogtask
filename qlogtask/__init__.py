@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 from __future__ import absolute_import
-import celery, datetime, json, logging, logtool, os, socket, time
+import celery, datetime, logging, logtool, os, socket, time
 from celery import signals
 from ._version import get_versions
 __version__ = get_versions ()['version']
@@ -41,7 +41,7 @@ def qetask_before_task_publish (**kwargs):
     "eta": body["eta"],
     "expires": body["expires"],
     "exchange": kwargs["exchange"],
-    "kwargs": json.dumps (body["kwargs"]),
+    "kwargs": body["kwargs"],
     "task": body["task"],
     "retries": body["retries"],
     "uuid": body["id"],
@@ -60,7 +60,7 @@ def qetask_after_task_publish (**kwargs):
     "eta": body["eta"],
     "expires": body["expires"],
     "exchange": kwargs["exchange"],
-    "kwargs": json.dumps (body["kwargs"]),
+    "kwargs": body["kwargs"],
     "task": body["task"],
     "retries": body["retries"],
     "uuid": body["id"],
@@ -76,7 +76,7 @@ def qetask_task_prerun (**kwargs):
   event.update ({
     "args": str (kwargs["args"]),
     "codepoint": str (kwargs["task"]),
-    "kwargs": json.dumps (kwargs["kwargs"]),
+    "kwargs": kwargs["kwargs"],
     "uuid": kwargs["task_id"],
   })
   send_event (event)
@@ -91,7 +91,7 @@ def qetask_task_postrun (**kwargs):
     "args": str (kwargs["args"]),
     "codepoint": str (kwargs["task"]),
     # Duration?
-    "kwargs": json.dumps (kwargs["kwargs"]),
+    "kwargs": kwargs["kwargs"],
     "retval": str (kwargs["retval"]),
     "state": kwargs["state"],
     "uuid": kwargs["task_id"],
@@ -109,7 +109,7 @@ def qetask_task_retry (**kwargs):
     "args": str (request.args),
     "eta": request.eta,
     "exception": str (kwargs["reason"]),
-    "kwargs": json.dumps (request.kwargs),
+    "kwargs": request.kwargs,
     "expires": request.expires,
     "retries": request.retries,
     "traceback": kwargs["einfo"].traceback,
@@ -117,12 +117,24 @@ def qetask_task_retry (**kwargs):
   })
   send_event (event)
 
-# Not used as the signal hase ~no useful propertiy data, just the
-# sender codepoint and the retval.
-# @signals.task_success.connect
-# @logtool.log_call (log_exit = False)
-# def qetask_task_success (**kwargs):
-#  pass
+@signals.task_success.connect
+@logtool.log_call (log_exit = False)
+def qetask_task_success (**kwargs):
+  if kwargs["sender"] == "qeventlog.tasks.log":
+    return
+  event = get_event ("task_success")
+  request = kwargs["sender"].request # task_success is weird
+  event.update ({
+    "args": str (request.args),
+    "eta": request.eta,
+    "expires": request.expires,
+    "kwargs": request.kwargs,
+    "result": kwargs["result"],
+    "retries": request.retries,
+    "task": request.task,
+    "uuid": request.id,
+  })
+  send_event (event)
 
 @logtool.log_call (log_exit = False)
 @signals.task_failure.connect
@@ -132,7 +144,7 @@ def qetask_task_failure (**kwargs):
   event = get_event ("task_failure")
   event.update ({
     "args": str (kwargs["args"]),
-    "kwargs": json.dumps (kwargs["kwargs"]),
+    "kwargs": kwargs["kwargs"],
     "exception": str (kwargs["einfo"].exception),
     "traceback": kwargs["einfo"].traceback,
     "uuid": kwargs["task_id"],
