@@ -126,6 +126,7 @@ def qetask_task_success (**kwargs):
   request = kwargs["sender"].request # task_success is weird
   event.update ({
     "args": str (request.args),
+    "codepoint": str (kwargs["sender"]),
     "eta": request.eta,
     "expires": request.expires,
     "kwargs": request.kwargs,
