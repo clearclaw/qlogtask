@@ -37,7 +37,7 @@ def qetask_before_task_publish (**kwargs):
   body = kwargs["body"]
   event = get_event ("before_task_publish")
   event.update ({
-    "args": str (body["args"]),
+    "args": body["args"],
     "eta": body["eta"],
     "expires": body["expires"],
     "exchange": kwargs["exchange"],
@@ -56,7 +56,7 @@ def qetask_after_task_publish (**kwargs):
   body = kwargs["body"]
   event = get_event ("after_task_publish")
   event.update ({
-    "args": str (body["args"]),
+    "args": body["args"],
     "eta": body["eta"],
     "expires": body["expires"],
     "exchange": kwargs["exchange"],
@@ -74,7 +74,7 @@ def qetask_task_prerun (**kwargs):
     return
   event = get_event ("task_prerun")
   event.update ({
-    "args": str (kwargs["args"]),
+    "args": kwargs["args"],
     "codepoint": str (kwargs["task"]),
     "kwargs": kwargs["kwargs"],
     "uuid": kwargs["task_id"],
@@ -88,11 +88,11 @@ def qetask_task_postrun (**kwargs):
     return
   event = get_event ("task_postrun")
   event.update ({
-    "args": str (kwargs["args"]),
+    "args": kwargs["args"],
     "codepoint": str (kwargs["task"]),
     # Duration?
     "kwargs": kwargs["kwargs"],
-    "retval": str (kwargs["retval"]),
+    "retval": kwargs["retval"],
     "state": kwargs["state"],
     "uuid": kwargs["task_id"],
   })
@@ -106,9 +106,9 @@ def qetask_task_retry (**kwargs):
   event = get_event ("task_retry")
   request = kwargs["request"]
   event.update ({
-    "args": str (request.args),
+    "args": request.args,
     "eta": request.eta,
-    "exception": str (kwargs["reason"]),
+    "exception": kwargs["reason"],
     "kwargs": request.kwargs,
     "expires": request.expires,
     "retries": request.retries,
@@ -125,7 +125,7 @@ def qetask_task_success (**kwargs):
   event = get_event ("task_success")
   request = kwargs["sender"].request # task_success is weird
   event.update ({
-    "args": str (request.args),
+    "args": request.args,
     "codepoint": str (kwargs["sender"]),
     "eta": request.eta,
     "expires": request.expires,
@@ -144,7 +144,7 @@ def qetask_task_failure (**kwargs):
     return
   event = get_event ("task_failure")
   event.update ({
-    "args": str (kwargs["args"]),
+    "args": kwargs["args"],
     "kwargs": kwargs["kwargs"],
     "exception": str (kwargs["einfo"].exception),
     "traceback": kwargs["einfo"].traceback,
