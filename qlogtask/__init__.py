@@ -108,7 +108,7 @@ def qetask_task_retry (**kwargs):
   event.update ({
     "args": request.args,
     "eta": request.eta,
-    "exception": kwargs["reason"],
+    "exception": str (kwargs["reason"]),
     "kwargs": request.kwargs,
     "expires": request.expires,
     "retries": request.retries,
