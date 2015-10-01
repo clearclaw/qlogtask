@@ -92,7 +92,7 @@ def qetask_task_postrun (**kwargs):
     "codepoint": str (kwargs["task"]),
     # Duration?
     "kwargs": kwargs["kwargs"],
-    "retval": kwargs["retval"],
+    "retval": str (kwargs["retval"]),
     "state": kwargs["state"],
     "uuid": kwargs["task_id"],
   })
