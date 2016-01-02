@@ -64,7 +64,7 @@ def qetask_after_task_publish (**kwargs):
     "task": body["task"],
     "retries": body["retries"],
     "uuid": body["id"],
-    "parent_id": celery.current_task.id if celery.current_task else None,
+    "parent_id": celery.current_task.request.id if celery.current_task else None,
   })
   send_event (event)
 
