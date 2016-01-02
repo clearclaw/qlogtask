@@ -30,6 +30,15 @@ def get_event (event):
   }
 
 @logtool.log_call (log_exit = False)
+def qetask_childtask (parent_id, child_id):
+  event = get_event ("child_task_create")
+  event.update ({
+    "parent_id": parent_id,
+    "child_id": child_id,
+  })
+  send_event (event)
+
+@logtool.log_call (log_exit = False)
 @signals.before_task_publish.connect
 def qetask_before_task_publish (**kwargs):
   if kwargs["sender"] == "qeventlog.tasks.log":
