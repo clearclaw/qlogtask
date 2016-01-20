@@ -5,7 +5,7 @@ import glob, versioneer
 
 setup (
     name = "qlogtask",
-    version = versioneer.get_version (),                
+    version = versioneer.get_version (),
     description = "Celery task event handlers for qeventlog",
     long_description = file ("README.rst").read (),
     cmdclass = versioneer.get_cmdclass (),
@@ -19,7 +19,7 @@ setup (
     keywords = "celery event logger",
     author = "J C Lawrence",
     author_email = "claw@kanga.nu",
-    url = "https://github.com/clearclaw/qeventlog",
+    url = "https://github.com/clearclaw/qlogtask",
     license = "GPL v3",
     packages = find_packages (exclude = ["tests",]),
     package_data = {},
