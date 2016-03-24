@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 from __future__ import absolute_import
-import celery, datetime, logging, logtool, os, socket, time
+import celery, datetime, json, logging, logtool, os, socket, time
 from celery import signals
 from ._version import get_versions
 __version__ = get_versions ()['version']
@@ -79,6 +79,7 @@ def qetask_task_prerun (**kwargs):
     "codepoint": str (kwargs["task"]),
     "kwargs": kwargs["kwargs"],
     "uuid": kwargs["task_id"],
+    "retries": 0,
   })
   send_event (event)
 
@@ -93,9 +94,10 @@ def qetask_task_postrun (**kwargs):
     "codepoint": str (kwargs["task"]),
     # Duration?
     "kwargs": kwargs["kwargs"],
-    "retval": str (kwargs["retval"]),
+    "retval": json.dumps (kwargs["retval"]),
     "state": kwargs["state"],
     "uuid": kwargs["task_id"],
+    "retries": kwargs["task"].request.retries,
   })
   send_event (event)
 
@@ -150,6 +152,7 @@ def qetask_task_failure (**kwargs):
     "exception": str (kwargs["einfo"].exception),
     "traceback": kwargs["einfo"].traceback,
     "uuid": kwargs["task_id"],
+    "retries": celery.current_task.request.retries,
   })
   send_event (event)
 
@@ -164,6 +167,7 @@ def qetask_task_revoked (**kwargs):
     "signum": kwargs["signum"],
     "terminated": kwargs["terminated"],
     "uuid": kwargs["task_id"],
+    "retries": kwargs["body"]["retries"],
   })
   send_event (event)
 
