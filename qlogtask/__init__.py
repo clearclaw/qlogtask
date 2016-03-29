@@ -76,7 +76,7 @@ def qetask_task_prerun (**kwargs):
   event = get_event ("task_prerun")
   event.update ({
     "args": kwargs["args"],
-    "codepoint": str (kwargs["task"]),
+    "codepoint": repr (kwargs["task"]),
     "kwargs": kwargs["kwargs"],
     "uuid": kwargs["task_id"],
     "retries": 0,
@@ -91,10 +91,12 @@ def qetask_task_postrun (**kwargs):
   event = get_event ("task_postrun")
   event.update ({
     "args": kwargs["args"],
-    "codepoint": str (kwargs["task"]),
+    "codepoint": repr (kwargs["task"]),
     # Duration?
     "kwargs": kwargs["kwargs"],
-    "retval": json.dumps (kwargs["retval"]),
+    "retval": (repr (kwargs["retval"])
+               if isinstance (kwargs["retval"], Exception)
+               else json.dumps (kwargs["retval"])),
     "state": kwargs["state"],
     "uuid": kwargs["task_id"],
     "retries": kwargs["task"].request.retries,
@@ -111,7 +113,7 @@ def qetask_task_retry (**kwargs):
   event.update ({
     "args": request.args,
     "eta": request.eta,
-    "exception": str (kwargs["reason"]),
+    "exception": repr (kwargs["reason"]),
     "kwargs": request.kwargs,
     "expires": request.expires,
     "retries": request.retries,
@@ -129,7 +131,7 @@ def qetask_task_success (**kwargs):
   request = kwargs["sender"].request # task_success is weird
   event.update ({
     "args": request.args,
-    "codepoint": str (kwargs["sender"]),
+    "codepoint": repr (kwargs["sender"]),
     "eta": request.eta,
     "expires": request.expires,
     "kwargs": request.kwargs,
@@ -149,7 +151,7 @@ def qetask_task_failure (**kwargs):
   event.update ({
     "args": kwargs["args"],
     "kwargs": kwargs["kwargs"],
-    "exception": str (kwargs["einfo"].exception),
+    "exception": repr (kwargs["einfo"].exception),
     "traceback": kwargs["einfo"].traceback,
     "uuid": kwargs["task_id"],
     "retries": celery.current_task.request.retries,
