@@ -42,7 +42,7 @@ def qetask_before_task_publish (**kwargs):
     "expires": body["expires"],
     "exchange": kwargs["exchange"],
     "kwargs": body["kwargs"],
-    "task": repr (body["task"]),
+    "task": body["task"],
     "retries": body["retries"],
     "uuid": body["id"],
   })
@@ -61,7 +61,7 @@ def qetask_after_task_publish (**kwargs):
     "expires": body["expires"],
     "exchange": kwargs["exchange"],
     "kwargs": body["kwargs"],
-    "task": repr (body["task"]),
+    "task": body["task"],
     "retries": body["retries"],
     "uuid": body["id"],
     "parent_id": (celery.current_task.request.id
@@ -79,7 +79,7 @@ def qetask_task_prerun (**kwargs):
     "args": kwargs["args"],
     "codepoint": repr (kwargs["task"]),
     "kwargs": kwargs["kwargs"],
-    "task": repr (kwargs["task"]),
+    "task": kwargs["sender"],
     "uuid": kwargs["task_id"],
     "retries": 0,
   })
@@ -100,7 +100,7 @@ def qetask_task_postrun (**kwargs):
                if isinstance (kwargs["retval"], Exception)
                else json.dumps (kwargs["retval"])),
     "state": kwargs["state"],
-    "task": repr (kwargs["task"]),
+    "task": kwargs["sender"],
     "uuid": kwargs["task_id"],
     "retries": kwargs["task"].request.retries,
   })
@@ -120,7 +120,7 @@ def qetask_task_retry (**kwargs):
     "kwargs": request.kwargs,
     "expires": request.expires,
     "retries": request.retries,
-    "task": repr (request.task),
+    "task": request.task,
     "traceback": kwargs["einfo"].traceback,
     "uuid": request.id,
   })
@@ -141,7 +141,7 @@ def qetask_task_success (**kwargs):
     "kwargs": request.kwargs,
     "result": kwargs["result"],
     "retries": request.retries,
-    "task": repr (request.task),
+    "task": request.task,
     "uuid": request.id,
   })
   send_event (event)
