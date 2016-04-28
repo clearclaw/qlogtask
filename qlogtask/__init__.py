@@ -79,7 +79,7 @@ def qetask_task_prerun (**kwargs):
     "args": kwargs["args"],
     "codepoint": repr (kwargs["task"]),
     "kwargs": kwargs["kwargs"],
-    "task": kwargs["sender"],
+    "task": kwargs["sender"].request.id,
     "uuid": kwargs["task_id"],
     "retries": 0,
   })
@@ -100,7 +100,7 @@ def qetask_task_postrun (**kwargs):
                if isinstance (kwargs["retval"], Exception)
                else json.dumps (kwargs["retval"])),
     "state": kwargs["state"],
-    "task": kwargs["sender"],
+    "task": kwargs["sender"].request.task,
     "uuid": kwargs["task_id"],
     "retries": kwargs["task"].request.retries,
   })
