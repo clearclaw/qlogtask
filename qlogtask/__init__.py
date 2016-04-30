@@ -22,12 +22,15 @@ def send_event (event):
 
 @logtool.log_call (log_exit = False)
 def get_event (event):
+  time_t = time.time ()
+  date_t = datetime.datetime.fromtimestamp (time_t)
   return {
     "event": event,
     "hostname": socket.gethostname (),
     "pid": os.getpid (),
     "task": None, # Should be updated by every event
-    "timestamp": time.time (),
+    "timestamp": time_t,
+    "datestamp": date_t,
   }
 
 @logtool.log_call (log_exit = False)
