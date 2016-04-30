@@ -26,6 +26,7 @@ def get_event (event):
     "event": event,
     "hostname": socket.gethostname (),
     "pid": os.getpid (),
+    "task": None, # Should be updated by every event
     "timestamp": time.time (),
   }
 
