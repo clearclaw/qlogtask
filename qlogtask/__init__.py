@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 from __future__ import absolute_import
-import celery, datetime, json, logging, logtool, os, socket, time
+import celery, json, logging, logtool, os, socket, time
 from celery import signals
 from ._version import get_versions
 __version__ = get_versions ()['version']
@@ -15,22 +15,19 @@ def send_event (event):
   # pylint: disable=E0611
   celery.execute.send_task ( # pylint: disable = E1101
     "qeventlog.tasks.log",
-    args = (str (datetime.datetime.utcnow ()),),
+    args = (event["timestamp"],),
     kwargs = event,
     exchange = "qeventlog",
     queue = "qeventlog")
 
 @logtool.log_call (log_exit = False)
 def get_event (event):
-  time_t = time.time ()
-  date_t = datetime.datetime.fromtimestamp (time_t)
   return {
     "event": event,
     "hostname": socket.gethostname (),
     "pid": os.getpid (),
     "task": None, # Should be updated by every event
-    "timestamp": time_t,
-    "datestamp": date_t,
+    "timestamp": time.time (),
   }
 
 @logtool.log_call (log_exit = False)
