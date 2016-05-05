@@ -45,7 +45,7 @@ def qetask_before_task_publish (**kwargs):
     "kwargs": body["kwargs"],
     "task": body["task"],
     "retries": body["retries"],
-    "uuid": body["id"],
+    "task_id": body["id"],
   })
   send_event (event)
 
@@ -64,7 +64,7 @@ def qetask_after_task_publish (**kwargs):
     "kwargs": body["kwargs"],
     "task": body["task"],
     "retries": body["retries"],
-    "uuid": body["id"],
+    "task_id": body["id"],
     "parent_id": (celery.current_task.request.id
                   if celery.current_task else None),
   })
@@ -81,7 +81,7 @@ def qetask_task_prerun (**kwargs):
     "codepoint": repr (kwargs["task"]),
     "kwargs": kwargs["kwargs"],
     "task": kwargs["sender"].request.id,
-    "uuid": kwargs["task_id"],
+    "task_id": kwargs["task_id"],
     "retries": 0,
   })
   send_event (event)
@@ -102,7 +102,7 @@ def qetask_task_postrun (**kwargs):
                else json.dumps (kwargs["retval"])),
     "state": kwargs["state"],
     "task": kwargs["sender"].request.task,
-    "uuid": kwargs["task_id"],
+    "task_id": kwargs["task_id"],
     "retries": kwargs["task"].request.retries,
   })
   send_event (event)
@@ -123,7 +123,7 @@ def qetask_task_retry (**kwargs):
     "retries": request.retries,
     "task": request.task,
     "traceback": kwargs["einfo"].traceback,
-    "uuid": request.id,
+    "task_id": request.id,
   })
   send_event (event)
 
@@ -143,7 +143,7 @@ def qetask_task_success (**kwargs):
     "result": kwargs["result"],
     "retries": request.retries,
     "task": request.task,
-    "uuid": request.id,
+    "task_id": request.id,
   })
   send_event (event)
 
@@ -159,7 +159,7 @@ def qetask_task_failure (**kwargs):
     "exception": repr (kwargs["einfo"].exception),
     "task": celery.current_task.request.task if celery.current_task else None,
     "traceback": kwargs["einfo"].traceback,
-    "uuid": kwargs["task_id"],
+    "task_id": kwargs["task_id"],
     "retries": celery.current_task.request.retries,
   })
   send_event (event)
@@ -175,7 +175,7 @@ def qetask_task_revoked (**kwargs):
     "signum": kwargs["signum"],
     "task": celery.current_task.request.task if celery.current_task else None,
     "terminated": kwargs["terminated"],
-    "uuid": kwargs["task_id"],
+    "task_id": kwargs["task_id"],
     "retries": kwargs["body"]["retries"],
   })
   send_event (event)
