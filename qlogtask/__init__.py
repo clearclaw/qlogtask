@@ -80,7 +80,7 @@ def qetask_task_prerun (**kwargs):
     "args": kwargs["args"],
     "codepoint": repr (kwargs["task"]),
     "kwargs": kwargs["kwargs"],
-    "task": kwargs["sender"].request.id,
+    "task": kwargs["sender"].request.task,
     "task_id": kwargs["task_id"],
     "retries": 0,
   })
