@@ -1,13 +1,14 @@
 #! /usr/bin/env python
 
 from setuptools import setup, find_packages
+from io import open
 import glob, versioneer
 
 setup (
     name = "qlogtask",
     version = versioneer.get_version (),
     description = "Celery task event handlers for qeventlog",
-    long_description = file ("README.rst").read (),
+    long_description = open ("README.rst", "r", encoding = "utf-8").read (),
     cmdclass = versioneer.get_cmdclass (),
     classifiers = [
       "Development Status :: 4 - Beta",
@@ -26,7 +27,8 @@ setup (
     data_files = [],
     zip_safe = False,
     install_requires = [line.strip ()
-                        for line in file ("requirements.txt").readlines ()],
+                        for line in open ("requirements.txt", "r",
+                                          encoding = "utf-8").readlines ()],
     entry_points = {
         "console_scripts": [],
     },
